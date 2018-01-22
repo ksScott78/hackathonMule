@@ -9,11 +9,13 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
 http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd">
     <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="8082" doc:name="HTTP Listener Configuration"/>
+    <smtp:gmail-connector name="Gmail" validateConnections="true" doc:name="Gmail" fromAddress="qamuletest@gmail.com" subject="subject"/>
     <flow name="apessentialsFlow">
         <http:listener config-ref="HTTP_Listener_Configuration" path="/" doc:name="HTTP"/>
         <byte-array-to-string-transformer doc:name="Byte Array to String"/>
         <set-payload value=" #[message.payload]" doc:name="Set Payload"/>
         <logger level="INFO" doc:name="Logger" message="#[payload],#[message]"/>
-        <file:outbound-endpoint path="C:\Users\scott\Desktop" outputPattern="muleTest.txt" responseTimeout="10000" doc:name="File"/>
+        <smtp:outbound-endpoint host="smtp.gmail.com" port="587" user="qamuletest@gmail.com" password="thisisaTestAccount" connector-ref="Gmail" to="{insert email address to send to}" subject="muleTest" responseTimeout="10000" doc:name="SMTP"/>
+        <file:outbound-endpoint path="{give path to file to write}" outputPattern="muleTest.txt" responseTimeout="10000" doc:name="File"/>
     </flow>
 </mule>
